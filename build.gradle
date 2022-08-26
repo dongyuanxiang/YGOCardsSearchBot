@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.bysz'
-version = '1.0.0'
+version = '1.0.1'
 
 dependencies{
     implementation 'com.alibaba.fastjson2:fastjson2:2.0.10'
