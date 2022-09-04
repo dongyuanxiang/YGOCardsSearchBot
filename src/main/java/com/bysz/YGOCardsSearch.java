@@ -8,7 +8,7 @@ public final class YGOCardsSearch extends JavaPlugin {
     public static final YGOCardsSearch INSTANCE = new YGOCardsSearch();
 
     private YGOCardsSearch() {
-        super(new JvmPluginDescriptionBuilder("com.bysz.YGOCardsSearch", "1.0.1")
+        super(new JvmPluginDescriptionBuilder("com.bysz.YGOCardsSearch", "1.0.2")
                 .name("YGOCardsSearch")
                 .author("bysz")
                 .build());

@@ -17,22 +17,16 @@ ck卡片绰号查询对应的卡片信息
 
 自动检查更新功能
 
-</details>  
-  
-  
-<details>
-    <summary>未来准备实现的功能</summary>  
+兼容[MiraiAndroid](https://github.com/mzdluo123/MiraiAndroid)  
 
-移除fastjson2依赖，尝试兼容[MiraiAndroid](https://github.com/mzdluo123/MiraiAndroid)  
-
-</details>  
+</details>
 
 
 ## 一切开发旨在学习，禁止用于非法用途 ##  
 
 绰号查寻功能依赖绰号收集表，更多信息请ck帮助查看  
 
-本插件使用教程可参考Mirai官方文档，也可观看我的[b站视频(游戏王查卡机器人使用教程)](https://www.bilibili.com/video/BV18Y4y1u7nG)  
+本插件使用教程可参考Mirai官方文档，也可观看我的b站视频（PC版）[游戏王查卡机器人（新）含使用教程和搭建教程](https://www.bilibili.com/video/BV18Y4y1u7nG)（安卓版）[游戏王查卡机器人手机版使用教程](https://www.bilibili.com/video/bv1od4y1Q7m1)
 
 如果您觉得本项目对您有帮助，可以对我进行一些免费的支持  
 例如给我的b站视频三连或者给这个项目点个星（star）  

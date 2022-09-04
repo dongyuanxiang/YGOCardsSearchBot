@@ -5,11 +5,7 @@ plugins {
 }
 
 group = 'com.bysz'
-version = '1.0.1'
-
-dependencies{
-    implementation 'com.alibaba.fastjson2:fastjson2:2.0.10'
-}
+version = '1.0.2'
 
 repositories {
     maven { url 'https://maven.aliyun.com/repository/public' }

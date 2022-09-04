@@ -1,7 +1,6 @@
 package com.bysz;
 
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
+
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.EventHandler;
 import net.mamoe.mirai.event.ListeningStatus;
@@ -11,6 +10,7 @@ import net.mamoe.mirai.message.data.Image;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class MainFunction extends SimpleListenerHost {
 
     int newVersion = 0;
-    int nowVersion = 101;
+    int nowVersion = 102;
     int queryCount = 100;
     //监听群聊消息
     @EventHandler
@@ -123,25 +123,55 @@ public class MainFunction extends SimpleListenerHost {
         Request request = new Request.Builder().url(API + query).build();
         Response response = client.newCall(request).execute();
         if(response.code() == 200){
-            String result = response.body().string();
-            if(result.length() > 50){
-                JSONObject jsonObject1 = JSONObject.parseObject(result);
-                JSONArray jsonArray1 = jsonObject1.getJSONArray("result");
-                JSONObject jsonObject2 = jsonArray1.getJSONObject(0);
-                String id = jsonObject2.getString("id");
-                String NWBBSname = jsonObject2.getString("cn_name");
-                String CNOCGname = jsonObject2.getString("cnocg_n");
-                String text = jsonObject2.getString("text");
-                JSONObject jsonObject3 = JSONObject.parseObject(text);
-                String types = jsonObject3.getString("types");
-                String pdesc = jsonObject3.getString("pdesc");
-                String desc = jsonObject3.getString("desc");
+            String card = response.body().string();
+            if(card.length() > 50){
+                String result = card.substring(card.indexOf("\"cid\":"),card.indexOf("\"data\":") - 2);
+                String id = result.substring(result.indexOf("\"id\":") + 5,result.indexOf("\"cn_name\":") - 1);
+                String cn_name = result.substring(result.indexOf("\"cn_name\":\"") + 11,result.indexOf("\"cnocg_n\":") - 2);
+                String cnocg_n = result.substring(result.indexOf("\"cnocg_n\":") + 11,result.indexOf("\"jp_ruby\":") - 2);
+                String jp_ruby = result.substring(result.indexOf("\"jp_ruby\":") + 11,result.indexOf("\"jp_name\":") - 2);
+                String jp_name = result.substring(result.indexOf("\"jp_name\":") + 11,result.indexOf("\"en_name\":") - 2);
+                String en_name = result.substring(result.indexOf("\"en_name\":") + 11,result.indexOf("\"text\":") - 2);
+                String text = result.substring(result.indexOf("\"text\":") + 8);
+                String types = text.substring(text.indexOf("\"types\":") + 9,text.indexOf("\"pdesc\":") - 2);
+                String pdesc = text.substring(text.indexOf("\"pdesc\":") + 9,text.indexOf("\"desc\":") - 2);
+                String desc = text.substring(text.indexOf("\"desc\":") + 8,text.length() - 1);
+                while(types.indexOf("\\r") > 0){
+                    String temp1 = types.substring(0,types.indexOf("\\r"));
+                    String temp2 = types.substring(types.indexOf("\\r") + 2);
+                    types = temp1 + "\r" + temp2;
+                }
+                while(types.indexOf("\\n") > 0){
+                    String temp1 = types.substring(0,types.indexOf("\\n"));
+                    String temp2 = types.substring(types.indexOf("\\n") + 2);
+                    types = temp1 + "\n" + temp2;
+                }
+                while(pdesc.indexOf("\\r") > 0){
+                    String temp1 = pdesc.substring(0,pdesc.indexOf("\\r"));
+                    String temp2 = pdesc.substring(pdesc.indexOf("\\r") + 2);
+                    pdesc = temp1 + "\r" + temp2;
+                }
+                while(pdesc.indexOf("\\n") > 0){
+                    String temp1 = pdesc.substring(0,pdesc.indexOf("\\n"));
+                    String temp2 = pdesc.substring(pdesc.indexOf("\\n") + 2);
+                    pdesc = temp1 + "\n" + temp2;
+                }
+                while(desc.indexOf("\\r") > 0){
+                    String temp1 = desc.substring(0,desc.indexOf("\\r"));
+                    String temp2 = desc.substring(desc.indexOf("\\r") + 2);
+                    desc = temp1 + "\r" + temp2;
+                }
+                while(desc.indexOf("\\n") > 0){
+                    String temp1 = desc.substring(0,desc.indexOf("\\n"));
+                    String temp2 = desc.substring(desc.indexOf("\\n") + 2);
+                    desc = temp1 + "\n" + temp2;
+                }
                 if(pdesc.equals("")){
                     Image image = Contact.uploadImage(event.getSender(),new URL("https://cdn.233.momobako.com/ygopro/pics/" + id + ".jpg").openConnection().getInputStream());
-                    event.getSubject().sendMessage(image.plus("NWBBS: " + NWBBSname + "\n" + "CNOCG: " + CNOCGname + "\n" + types + "\n\n" + desc));
+                    event.getSubject().sendMessage(image.plus("NWBBS: " + cn_name + "\n" + "CNOCG: " + cnocg_n + "\n" + types + "\n\n" + desc));
                 }else{
                     Image image = Contact.uploadImage(event.getSender(),new URL("https://cdn.233.momobako.com/ygopro/pics/" + id + ".jpg").openConnection().getInputStream());
-                    event.getSubject().sendMessage(image.plus("NWBBS: " + NWBBSname + "\n" + "CNOCG: " + CNOCGname + "\n" + types + "\n\n"  + pdesc + "\n\n" + desc));
+                    event.getSubject().sendMessage(image.plus("NWBBS: " + cn_name + "\n" + "CNOCG: " + cnocg_n + "\n" + types + "\n\n"  + pdesc + "\n\n" + desc));
                 }
             }else{
                 event.getSubject().sendMessage("未查询到任何结果，请尝试更换关键字。\n请勿查询与游戏王无关的事物，一经发现，直接退群\n绰号查询说明及获取更多信息请输入ck帮助");
