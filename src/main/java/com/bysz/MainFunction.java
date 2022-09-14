@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class MainFunction extends SimpleListenerHost {
 
     int newVersion = 0;
-    int nowVersion = 102;
+    int nowVersion = 103;
     int queryCount = 100;
     //监听群聊消息
     @EventHandler
@@ -129,9 +129,24 @@ public class MainFunction extends SimpleListenerHost {
                 String id = result.substring(result.indexOf("\"id\":") + 5,result.indexOf("\"cn_name\":") - 1);
                 String cn_name = result.substring(result.indexOf("\"cn_name\":\"") + 11,result.indexOf("\"cnocg_n\":") - 2);
                 String cnocg_n = result.substring(result.indexOf("\"cnocg_n\":") + 11,result.indexOf("\"jp_ruby\":") - 2);
+                /*
                 String jp_ruby = result.substring(result.indexOf("\"jp_ruby\":") + 11,result.indexOf("\"jp_name\":") - 2);
-                String jp_name = result.substring(result.indexOf("\"jp_name\":") + 11,result.indexOf("\"en_name\":") - 2);
-                String en_name = result.substring(result.indexOf("\"en_name\":") + 11,result.indexOf("\"text\":") - 2);
+                String jp_name = "";
+                if(result.indexOf("\"en_name\":") > 0){
+                    jp_name = result.substring(result.indexOf("\"jp_name\":") + 11,result.indexOf("\"en_name\":") - 2);
+                }
+                if(result.indexOf("\"wiki_en\":") > 0){
+                    jp_name = result.substring(result.indexOf("\"jp_name\":") + 11,result.indexOf("\"wiki_en\":") - 2);
+                }
+                String en_name = "";
+                if(result.indexOf("\"en_name\":") > 0){
+                    en_name = result.substring(result.indexOf("\"en_name\":") + 11,result.indexOf("\"text\":") - 2);
+                }
+                String wiki_en = "";
+                if(result.indexOf("\"wiki_en\":") > 0){
+                    wiki_en = result.substring(result.indexOf("\"wiki_en\":") + 11,result.indexOf("\"text\":") - 2);
+                }
+                */
                 String text = result.substring(result.indexOf("\"text\":") + 8);
                 String types = text.substring(text.indexOf("\"types\":") + 9,text.indexOf("\"pdesc\":") - 2);
                 String pdesc = text.substring(text.indexOf("\"pdesc\":") + 9,text.indexOf("\"desc\":") - 2);
@@ -194,6 +209,7 @@ public class MainFunction extends SimpleListenerHost {
                 System.out.println("检查更新成功，最新版本版本号为：" + newVersion);
             }else{
                 System.out.println("无法检查更新，请联系作者");
+                event.getSubject().sendMessage("无法检查更新，请联系作者");
             }
             queryCount = 0;
         }
