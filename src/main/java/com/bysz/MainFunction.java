@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 public class MainFunction extends SimpleListenerHost {
 
     int newVersion = 0;
-    int nowVersion = 103;
+    int nowVersion = 106;
     int queryCount = 100;
     //监听群聊消息
     @EventHandler
@@ -77,11 +77,11 @@ public class MainFunction extends SimpleListenerHost {
      */
     public boolean diyReply(String query,GroupMessageEvent event){
         if(query.equals("作者")){
-            event.getSubject().sendMessage("作者QQ：3113481505\n游戏王QQ群：897732813\nB站个人空间：https://space.bilibili.com/37681307\n感谢您的支持");
+            event.getSubject().sendMessage("作者QQ：3113481505\n游戏王QQ群：897732813\nB站个人空间：https://space.bilibili.com/37681307");
             return true;
         }
         if(query.equals("帮助")){
-            event.getSubject().sendMessage("绰号收集功能源于此表\n【腾讯文档】卡片绰号收集表\nhttps://docs.qq.com/sheet/DQXpiVFJDZm5JWGh5\n提交的绰号在机器人收录后即可使用ck绰号查询\n感谢您的支持");
+            event.getSubject().sendMessage("输入ck+（卡名/绰号）即可查询卡片信息");
             return true;
         }
         return false;
@@ -104,9 +104,9 @@ public class MainFunction extends SimpleListenerHost {
             String result = response.body().string();
             cardApiQuery(result,event);
         }else{
-            System.out.println("机器人绰号查询模块出现错误\n错误代码：" + response.code() + "\n请及时联系作者");
+            System.out.println("机器人绰号查询功能出现错误\n错误代码：" + response.code() + "\n请及时联系作者");
             cardApiQuery(query,event);
-            event.getSubject().sendMessage("机器人绰号查询模块出现错误\n错误代码：" + response.code() + "\n请及时联系作者");
+            event.getSubject().sendMessage("机器人绰号查询功能出现错误\n错误代码：" + response.code() + "\n请及时联系作者");
         }
     }
 
@@ -125,32 +125,105 @@ public class MainFunction extends SimpleListenerHost {
         if(response.code() == 200){
             String card = response.body().string();
             if(card.length() > 50){
-                String result = card.substring(card.indexOf("\"cid\":"),card.indexOf("\"data\":") - 2);
-                String id = result.substring(result.indexOf("\"id\":") + 5,result.indexOf("\"cn_name\":") - 1);
-                String cn_name = result.substring(result.indexOf("\"cn_name\":\"") + 11,result.indexOf("\"cnocg_n\":") - 2);
-                String cnocg_n = result.substring(result.indexOf("\"cnocg_n\":") + 11,result.indexOf("\"jp_ruby\":") - 2);
+                String result = card.substring(card.indexOf("\"cid\""),card.indexOf("\"data\"") - 1);
+
+                String id = "0";
+                int idIndex = result.indexOf("\"id\"");
+                if(idIndex > 0){
+                    int idBeginIndex = idIndex + 5;
+                    int idEndIndex = result.indexOf(",",idBeginIndex);
+                    id = result.substring(idBeginIndex,idEndIndex);
+                }
+
+                String cn_name = "暂无";
+                int cn_nameIndex = result.indexOf("\"cn_name\"");
+                if(cn_nameIndex > 0){
+                    int cn_nameBeginIndex = cn_nameIndex + 11;
+                    int cn_nameEndIndex = result.indexOf(",",cn_nameBeginIndex) - 1;
+                    cn_name = result.substring(cn_nameBeginIndex,cn_nameEndIndex);
+                }
+
+
+                String sc_name = "暂无";
+                int sc_nameIndex = result.indexOf("\"sc_name\"");
+                if(sc_nameIndex > 0){
+                    int sc_nameBeginIndex = sc_nameIndex + 11;
+                    int sc_nameEndIndex = result.indexOf(",",sc_nameBeginIndex) - 1;
+                    sc_name = result.substring(sc_nameBeginIndex,sc_nameEndIndex);
+                }
+
+                String cnocg_n = "暂无";
+                int cnocg_nIndex = result.indexOf("\"cnocg_n\"");
+                if(cnocg_nIndex > 0){
+                    int cnocg_nBeginIndex = cnocg_nIndex + 11;
+                    int cnocg_nEndIndex = result.indexOf(",",cnocg_nBeginIndex) - 1;
+                    cnocg_n = result.substring(cnocg_nBeginIndex,cnocg_nEndIndex);
+                }
                 /*
-                String jp_ruby = result.substring(result.indexOf("\"jp_ruby\":") + 11,result.indexOf("\"jp_name\":") - 2);
-                String jp_name = "";
-                if(result.indexOf("\"en_name\":") > 0){
-                    jp_name = result.substring(result.indexOf("\"jp_name\":") + 11,result.indexOf("\"en_name\":") - 2);
+                String jp_ruby = "暂无";
+                int jp_rubyIndex = result.indexOf("\"jp_ruby\"");
+                if(jp_rubyIndex > 0){
+                    int jp_rubyBeginIndex = jp_rubyIndex + 9;
+                    int jp_rubyEndIndex = result.indexOf(",",jp_rubyIndex) - 1;
+                    jp_ruby = result.substring(jp_rubyBeginIndex,jp_rubyEndIndex);
                 }
-                if(result.indexOf("\"wiki_en\":") > 0){
-                    jp_name = result.substring(result.indexOf("\"jp_name\":") + 11,result.indexOf("\"wiki_en\":") - 2);
+
+                String jp_name = "暂无";
+                int jp_nameIndex = result.indexOf("\"jp_name\"");
+                if(jp_nameIndex > 0){
+                    int jp_nameBeginIndex = jp_nameIndex + 9;
+                    int jp_nameEndIndex = result.indexOf(",",jp_nameIndex) - 1;
+                    jp_name = result.substring(jp_nameBeginIndex,jp_nameEndIndex);
                 }
-                String en_name = "";
-                if(result.indexOf("\"en_name\":") > 0){
-                    en_name = result.substring(result.indexOf("\"en_name\":") + 11,result.indexOf("\"text\":") - 2);
+
+                String en_name = "暂无";
+                int en_nameIndex = result.indexOf("\"en_name\"");
+                if(en_nameIndex > 0){
+                    int en_nameBeginIndex = en_nameIndex + 9;
+                    int en_nameEndIndex = result.indexOf(",",en_nameIndex) - 1;
+                    en_name = result.substring(en_nameBeginIndex,en_nameEndIndex);
                 }
-                String wiki_en = "";
-                if(result.indexOf("\"wiki_en\":") > 0){
-                    wiki_en = result.substring(result.indexOf("\"wiki_en\":") + 11,result.indexOf("\"text\":") - 2);
+
+                String wiki_en = "暂无";
+                int wiki_enIndex = result.indexOf("\"wiki_en\"");
+                if(wiki_enIndex > 0){
+                    int wiki_enBeginIndex = wiki_enIndex + 9;
+                    int wiki_enEndIndex = result.indexOf(",",wiki_enIndex) - 1;
+                    wiki_en = result.substring(wiki_enBeginIndex,wiki_enEndIndex);
                 }
                 */
-                String text = result.substring(result.indexOf("\"text\":") + 8);
-                String types = text.substring(text.indexOf("\"types\":") + 9,text.indexOf("\"pdesc\":") - 2);
-                String pdesc = text.substring(text.indexOf("\"pdesc\":") + 9,text.indexOf("\"desc\":") - 2);
-                String desc = text.substring(text.indexOf("\"desc\":") + 8,text.length() - 1);
+                String text = "暂无";
+                int textIndex = result.indexOf("\"text\"");
+                if(textIndex > 0){
+                    int textBeginIndex = textIndex + 7;
+                    int textEndIndex = result.length();
+                    text = result.substring(textBeginIndex,textEndIndex);
+                }
+
+                String types = "暂无";
+                int typesIndex = text.indexOf("\"types\"");
+                if(typesIndex > 0){
+                    int typesBeginIndex = typesIndex + 9;
+                    int typesEndIndex = text.indexOf(",",typesBeginIndex) - 1;
+                    types = text.substring(typesBeginIndex,typesEndIndex);
+                }
+
+                String pdesc = "暂无";
+                int pdescIndex = text.indexOf("\"pdesc\"");
+                if(typesIndex > 0){
+                    int pdescBeginIndex = pdescIndex + 9;
+                    int pdescEndIndex = text.indexOf(",",pdescBeginIndex) - 1;
+                    pdesc = text.substring(pdescBeginIndex,pdescEndIndex);
+                }
+
+                String desc = "暂无";
+                int descIndex = text.indexOf("\"desc\"");
+                if(descIndex > 0){
+                    int descBeginIndex = descIndex + 8;
+                    int descEndIndex = text.length() - 2;
+                    desc = text.substring(descBeginIndex,descEndIndex);
+                }
+
                 while(types.indexOf("\\r") > 0){
                     String temp1 = types.substring(0,types.indexOf("\\r"));
                     String temp2 = types.substring(types.indexOf("\\r") + 2);
@@ -183,17 +256,17 @@ public class MainFunction extends SimpleListenerHost {
                 }
                 if(pdesc.equals("")){
                     Image image = Contact.uploadImage(event.getSender(),new URL("https://cdn.233.momobako.com/ygopro/pics/" + id + ".jpg").openConnection().getInputStream());
-                    event.getSubject().sendMessage(image.plus("NWBBS: " + cn_name + "\n" + "CNOCG: " + cnocg_n + "\n" + types + "\n\n" + desc));
+                    event.getSubject().sendMessage(image.plus("NWBBS：" + cn_name + "\n" + "简体中文：" + sc_name + "\n" + "CNOCG：" + cnocg_n + "\n" + types + "\n\n" + desc));
                 }else{
                     Image image = Contact.uploadImage(event.getSender(),new URL("https://cdn.233.momobako.com/ygopro/pics/" + id + ".jpg").openConnection().getInputStream());
-                    event.getSubject().sendMessage(image.plus("NWBBS: " + cn_name + "\n" + "CNOCG: " + cnocg_n + "\n" + types + "\n\n"  + pdesc + "\n\n" + desc));
+                    event.getSubject().sendMessage(image.plus("NWBBS：" + cn_name + "\n" + "简体中文：" + sc_name + "\n" + "CNOCG：" + cnocg_n + "\n" + types + "\n\n"  + pdesc + "\n\n" + desc));
                 }
             }else{
-                event.getSubject().sendMessage("未查询到任何结果，请尝试更换关键字。\n请勿查询与游戏王无关的事物，一经发现，直接退群\n绰号查询说明及获取更多信息请输入ck帮助");
+                event.getSubject().sendMessage("未查询到任何结果，请尝试更换关键字。");
             }
         }else{
-            System.out.println("机器人卡片查询模块出现错误\n" + "错误代码：" + response.code() + "\n请及时联系作者");
-            event.getSubject().sendMessage("机器人卡片查询模块出现错误\n" + "错误代码：" + response.code() + "\n请及时联系作者");
+            System.out.println("机器人卡片查询功能出现错误\n" + "错误代码：" + response.code() + "\n请及时联系作者");
+            event.getSubject().sendMessage("机器人卡片查询功能出现错误\n" + "错误代码：" + response.code() + "\n请及时联系作者");
         }
     }
     public void update(GroupMessageEvent event) throws IOException {
